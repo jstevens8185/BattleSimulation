@@ -51,6 +51,21 @@ class LocationCoordinates {
 			return new LocationCoordinates(this->xPosition, this->yPosition, this->zPosition);
 		}
 		void updatePosition(float x, float y, float z){
+			if((xPosition + x) > 50) {
+				x = 50;
+			}else if((xPosition + x) < -50){
+				x = -50;
+			}
+			if((yPosition + y) > 50) {
+				y = 50;
+			}else if((yPosition + y) < -50){
+				y = -50;
+			}
+			if((zPosition + z) > 100) {
+				z = 100;
+			}else if((zPosition + z) < 0){
+				z = 0;
+			}
 			xPosition += x;
 			yPosition += y;
 			zPosition +=z;

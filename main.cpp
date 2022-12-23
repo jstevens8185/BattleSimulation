@@ -15,7 +15,9 @@ int main() {
 	Medic DrHouse;
 
 	tank1.getLocation();
-	tank1.move(5,-2.8, 0);
+	tank1.move(49,-48.3, 0);
+	tank1.getLocation();
+	tank1.move(3, -5, 0);
 	tank1.getLocation();
 	
 }
