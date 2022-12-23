@@ -158,7 +158,7 @@ public:
 	bool isWithinMeleeRange(cSprite& target){
 		if (sqrt((location.getXPosition() - target.location.getXPosition())*(location.getXPosition() - target.location.getXPosition())
 			+ (location.getYPosition() - target.location.getYPosition())*(location.getYPosition() - target.location.getYPosition())  
-			+ (location.getZPosition() - target.location.getZPosition())*(location.getZPosition() - target.location.getZPosition()) <= meleeRange))
+			+ (location.getZPosition() - target.location.getZPosition())*(location.getZPosition() - target.location.getZPosition())) <= meleeRange)
 		{
 			return true;
 		}
@@ -169,9 +169,9 @@ public:
 		}
 	}
 	bool isWithinWeaponRange(cSprite& target){
-		if (sqrt((location.getXPosition() - target.location.getXPosition())*(location.getXPosition() - target.location.getXPosition())
-			+ (location.getYPosition() - target.location.getYPosition())*(location.getYPosition() - target.location.getYPosition())  
-			+ (location.getZPosition() - target.location.getZPosition())*(location.getZPosition() - target.location.getZPosition()) <= gunRange))
+		if (sqrt((this->location.getXPosition() - target.location.getXPosition())*(this->location.getXPosition() - target.location.getXPosition())
+			+ (this->location.getYPosition() - target.location.getYPosition())*(this->location.getYPosition() - target.location.getYPosition())  
+			+ (this->location.getZPosition() - target.location.getZPosition())*(this->location.getZPosition() - target.location.getZPosition())) <= this->gunRange)
 		{
 			return true;
 		}

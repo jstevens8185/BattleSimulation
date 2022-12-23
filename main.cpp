@@ -15,11 +15,11 @@ int main() {
 	Medic DrHouse;
 
 	
-	tank1.move(30,2,0);
+	tank1.move(50,0,0);
 	std::cout << "Tank location is "; 
 	tank1.getLocation();
 	std::cout << std::endl;
-	bossNas.move(50,0,0);
+	bossNas.move(30,0,0);
 	std::cout << "bossNass location is "; 
 	bossNas.getLocation();
 	std::cout << std::endl;
