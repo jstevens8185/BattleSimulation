@@ -1,3 +1,11 @@
+#pragma once
+
+#define _NORTHWALL = 50;
+#define _SOUTHWALL = -50;
+#define _WESTWALL = -50;
+#define _EASTWALL = 50;
+#define _FLOOR = 0;
+#define _CEILING = 100;
 
 
 class LocationCoordinates {
