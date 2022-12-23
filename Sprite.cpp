@@ -1,7 +1,12 @@
 #pragma once
 #include <iostream>
 #include <cstdlib>
+#include <ctime>
+#include <random>
 #include "Map.cpp"
+
+
+
 
 enum SpriteClass {TANK, BOSS, DPS, MEDIC, MINION, OPERATOR};
 
@@ -119,8 +124,19 @@ public:
 		}
 		else if (isWithinWeaponRange(target))
 		{
-			target.reduceHealth(damage);
-			std::cout << "Successful Weapon attack!" << std::endl;
+			srand(time(0));
+			int hitChance;
+			for(int i = 0; i < rateOfFire; i++){
+				hitChance = (rand() % 100);
+				if(hitChance < 60){
+					target.reduceHealth(damage);
+					std::cout << "Successful Weapon attack!" << std::endl;
+				}
+				else
+				{
+					std::cout << "Attack missed" << std::endl;
+				}
+			}
 			return;
 		}
 		else
@@ -200,7 +216,7 @@ private:
 	int healRange = 15; //Meters
 	
 public:
-	Medic() : cSprite(100, 1, 1, 1, 1, 1, 15, MEDIC) {
+	Medic() : cSprite(100, 1, 3, 1, 1, 1, 15, MEDIC) {
 		healRate = 1;
 		meleeRange = .7; //Meters
 		meleeDamage = 2; //HP
