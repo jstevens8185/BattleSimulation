@@ -2,6 +2,14 @@
 #include <string>
 #include <random>
 
+#define _NORTHWALL = 50;
+#define _SOUTHWALL = -50;
+#define _WESTWALL = -50;
+#define _EASTWALL = 50;
+#define _FLOOR = 0;
+#define _CEILING = 100;
+
+
 enum SpriteClass {TANK, BOSS, DPS, MEDIC, MINION, OPERATOR};
 
 class cSprite {
