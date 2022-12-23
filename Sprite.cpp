@@ -1,4 +1,4 @@
-#include "Coordinates.cpp"
+#include "Map.cpp"
 
 enum SpriteClass {TANK, BOSS, DPS, MEDIC, MINION, OPERATOR};
 
