@@ -17,11 +17,11 @@ int main() {
 	
 	tank1.move(50,0,0);
 	std::cout << "Tank location is "; 
-	tank1.getLocation();
+	tank1.printLocation();
 	std::cout << std::endl;
 	bossNas.move(30,0,0);
 	std::cout << "bossNass location is "; 
-	bossNas.getLocation();
+	bossNas.printLocation();
 	std::cout << std::endl;
 	tank1.attack(bossNas);
 	std::cout << "bossNas health is " << bossNas.getHealth();

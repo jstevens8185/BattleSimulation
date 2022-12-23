@@ -1,3 +1,13 @@
+/***************************************************************************
+ * File:	Sprite.cpp
+ * Author: 	Jered Stevens
+ * 
+ * What it is:
+ * 		Contains definitions for Sprites and all of it's subclasses.
+ * 		Each subclass has it's own unique attributes, such as the medic
+ * 		having the ability to heal other sprites.
+*******************************************************************************/
+
 #pragma once
 #include <iostream>
 #include <cstdlib>
@@ -9,6 +19,59 @@
 
 
 enum SpriteClass {TANK, BOSS, DPS, MEDIC, MINION, OPERATOR};
+
+/************************************************************************************
+ * Class: 		cSprite
+ * 
+ * Purpose:		This is the parent class for all units. Contains functions and variables
+ * 				held by every unit, such as health, move speed, and location within map.
+ * 
+ * Private Member Variables:
+ * 				LocationCoordinates location
+ * 
+ * Protected Member Variables:
+ * 				SpriteClass classType;
+ *				double health;
+ *				double damage;
+ *				double rateOfFire;
+ *				double moveSpeed;
+ *				double jumpHeight;
+ *				double armourRating;
+ *				int numBullets;
+ *				int meleeRange; 	-->Meters
+ *				int meleeDamage; 	-->HealthPoints
+ *				int gunRange; 		-->Meters
+ *				int accuracy; 		-->Percentage 
+ *
+ * Constructors:
+ * 				cSprite() - default constructor, God mode class
+ * 
+ * 				cSprite(double, double, double, double, double, double, int, SpriteClass)
+ * 					-Standard constructor for playable types
+ * 					-Parameters are as follows:
+ * 						health
+ * 						damage
+ * 						rate of fire
+ * 						movement speed
+ * 						jump height
+ * 						Armor rating
+ * 						number of bullets
+ * 						class type
+ * 
+ * Functions:
+ * 				getClassType() -> returns SpriteClass
+ * 				setClassType(SpriteClass) -> returns void
+ * 				getHealth() -> returns double
+ * 				setHealth(double) -> returns void
+ * 				increaseHealth(int) -> returns void
+ * 				reduceHealth(double) -> returns void
+ * 				isAlive() -> returns bool
+ * 				attack(cSprite&) -> returns void
+ * 				move(float, flaot, float) -> returns void
+ * 				printLocation() -> returns void
+ * 				isWithinMeleeRange(cSprite&) -> returns bool
+ * 				isWithinWeaponRange(cSprite&) -> returns bool
+*************************************************************************************/
 
 class cSprite {
 private:
@@ -22,10 +85,10 @@ protected:
 	double jumpHeight;
 	double armourRating;
 	int numBullets;
-	int meleeRange = 1; //Meters
-	int meleeDamage = 7; //HealthPoints
-	int gunRange = 30; //Meters
-	int accuracy = 40; //Percentage
+	int meleeRange; //Meters
+	int meleeDamage; //HealthPoints
+	int gunRange; //Meters
+	int accuracy; //Percentage
 
 public:
 	cSprite() {
@@ -34,8 +97,12 @@ public:
 		rateOfFire = 1.00;
 		moveSpeed = 1.00;
 		jumpHeight = 1.00;
-		armourRating = 1.00;
+		armourRating = 100.00;
 		numBullets = 30;
+		meleeRange = 5;
+		meleeDamage = 25;
+		gunRange = 1000;
+		accuracy = 100;
 		classType = OPERATOR;
 	}
 	cSprite(double hel, double dam, double rof, double mov, double jmp, double AR, int numBull, SpriteClass sClass) {
@@ -48,44 +115,15 @@ public:
 		numBullets = numBull;
 		classType = sClass;
 	}
-	//cSprite(SpriteClass type) {
-	//	classType = type;
-	//	if (type == TANK) {
-	//		health = 100;
-	//		damage = 1;
-	//		rateOfFire = 5;
-	//		moveSpeed = .5;
-	//		armourRating = 4;
-	//		numBullets = 200;
-	//	}
-	//	if (type == BOSS) {
-	//		health = 100;
-	//		damage = 5;
-	//		rateOfFire = .5;
-	//		moveSpeed = .4;
-	//		armourRating = 10;
-	//		numBullets = 75;
-	//	}
-	//	if (type == DPS) {
-	//		health = 100;
-	//		damage = 2;
-	//		rateOfFire = 2;
-	//		moveSpeed = 1;
-	//		armourRating = 1;
-	//		numBullets = 30;
-	//	}
-	//	if (type == MEDIC) {
-	//		health = 100;
-	//		damage = 1;
-	//		rateOfFire = 1;
-	//		moveSpeed = 1;
-	//		armourRating = 1;
-	//		numBullets = 15;
-	//	}
-	//}
 
-	virtual SpriteClass getClass() {
+
+
+	virtual SpriteClass getClassType() {
 		return classType;
+	}
+	virtual void setClassType(SpriteClass newType){
+		classType = newType;
+		return;
 	}
 	virtual double getHealth() {
 		return health;
@@ -114,8 +152,13 @@ public:
 			return false;
 	}
 	virtual void attack(cSprite& target) {
+		//If target is type operator, no damage can be dealt. You do what we do. Run.
 		//If attacker is within melee range of target- attack with melee damage
 		//If attacker is within gunRange of target - attack with damage
+		if(target.getClassType() == OPERATOR){
+			std::cout << "No damage can be dealt to God.\n";
+			return;
+		}
 		if (isWithinMeleeRange(target))
 		{
 			target.reduceHealth(meleeDamage);
@@ -128,7 +171,7 @@ public:
 			int hitChance;
 			for(int i = 0; i < rateOfFire; i++){
 				hitChance = (rand() % 100);
-				if(hitChance < 60){
+				if(hitChance < accuracy){
 					target.reduceHealth(damage);
 					std::cout << "Successful Weapon attack!" << std::endl;
 				}
@@ -147,7 +190,7 @@ public:
 	virtual void move(float x, float y, float z){
 		location.updatePosition(x, y, z);
 	}
-    void getLocation(){
+    void printLocation(){
         LocationCoordinates* tempLocation = location.getLocation();
         std::cout << "X: " << tempLocation->getXPosition() << ", "
             << "Y: " << tempLocation->getYPosition() << ", "
@@ -205,7 +248,6 @@ public:
 	int getNumBombs(){
 		return numBombs;
 	}
-
 
 };
 
