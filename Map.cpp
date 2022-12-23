@@ -52,18 +52,24 @@ class LocationCoordinates {
 		}
 		void updatePosition(float x, float y, float z){
 			if((xPosition + x) > 50) {
-				x = 50;
+				xPosition = 50;
+				x = 0;
 			}else if((xPosition + x) < -50){
-				x = -50;
+				xPosition = -50;
+				x = 0;
 			}
 			if((yPosition + y) > 50) {
-				y = 50;
+				yPosition = 50;
+				y = 0;
 			}else if((yPosition + y) < -50){
-				y = -50;
+				yPosition = -50;
+				y = 0;
 			}
 			if((zPosition + z) > 100) {
-				z = 100;
+				zPosition = 100;
+				z = 0;
 			}else if((zPosition + z) < 0){
+				zPosition = 0;
 				z = 0;
 			}
 			xPosition += x;
