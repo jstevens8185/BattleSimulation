@@ -156,9 +156,9 @@ public:
         return;
     }
 	bool isWithinMeleeRange(cSprite& target){
-		if (abs(location.getXPosition() - target.location.getXPosition()) <= meleeRange &&
-		 	abs(location.getYPosition() - target.location.getYPosition()) <= meleeRange &&
-			abs(location.getZPosition() - target.location.getZPosition()) <= meleeRange)
+		if (sqrt((location.getXPosition() - target.location.getXPosition())*(location.getXPosition() - target.location.getXPosition())
+			+ (location.getYPosition() - target.location.getYPosition())*(location.getYPosition() - target.location.getYPosition())  
+			+ (location.getZPosition() - target.location.getZPosition())*(location.getZPosition() - target.location.getZPosition()) <= meleeRange))
 		{
 			return true;
 		}
@@ -169,9 +169,9 @@ public:
 		}
 	}
 	bool isWithinWeaponRange(cSprite& target){
-		if (abs(location.getXPosition() - target.location.getXPosition()) <= gunRange &&
-		 	abs(location.getYPosition() - target.location.getYPosition()) <= gunRange &&
-			abs(location.getZPosition() - target.location.getZPosition()) <= gunRange)
+		if (sqrt((location.getXPosition() - target.location.getXPosition())*(location.getXPosition() - target.location.getXPosition())
+			+ (location.getYPosition() - target.location.getYPosition())*(location.getYPosition() - target.location.getYPosition())  
+			+ (location.getZPosition() - target.location.getZPosition())*(location.getZPosition() - target.location.getZPosition()) <= gunRange))
 		{
 			return true;
 		}
