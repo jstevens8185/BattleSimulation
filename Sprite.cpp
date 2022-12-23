@@ -1,3 +1,5 @@
+#pragma once
+#include <iostream>
 #include "Map.cpp"
 
 enum SpriteClass {TANK, BOSS, DPS, MEDIC, MINION, OPERATOR};
@@ -107,6 +109,14 @@ public:
 	virtual void move(float x, float y, float z){
 		location.updatePosition(x, y, z);
 	}
+    void getLocation(){
+        LocationCoordinates* tempLocation = location.getLocation();
+        std::cout << "X: " << tempLocation->getXPosition() << std::endl 
+            << "Y: " << tempLocation->getYPosition() << std::endl
+            << "Z: " << tempLocation->getZPosition() << std::endl;
+        delete tempLocation;
+        return;
+    }
 };
 
 class Tank : public cSprite

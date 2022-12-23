@@ -47,9 +47,13 @@ class LocationCoordinates {
 		float getZPosition(){
 			return zPosition;
 		}
+		LocationCoordinates* getLocation(){
+			return new LocationCoordinates(this->xPosition, this->yPosition, this->zPosition);
+		}
 		void updatePosition(float x, float y, float z){
 			xPosition += x;
 			yPosition += y;
 			zPosition +=z;
 		}
+
 };
