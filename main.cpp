@@ -14,10 +14,16 @@ int main() {
 	Boss bossNas;
 	Medic DrHouse;
 
+	
+	tank1.move(-40,2,0);
+	std::cout << "Tank location is "; 
 	tank1.getLocation();
-	tank1.move(49,-48.3, 0);
-	tank1.getLocation();
-	tank1.move(3, -5, 0);
-	tank1.getLocation();
+	std::cout << std::endl;
+	bossNas.move(50,0,0);
+	std::cout << "bossNass location is "; 
+	bossNas.getLocation();
+	std::cout << std::endl;
+	tank1.attack(bossNas);
+	std::cout << "bossNas health is " << bossNas.getHealth();
 	
 }

@@ -1,5 +1,6 @@
 #pragma once
 #include <iostream>
+#include <cstdlib>
 #include "Map.cpp"
 
 enum SpriteClass {TANK, BOSS, DPS, MEDIC, MINION, OPERATOR};
@@ -16,6 +17,10 @@ protected:
 	double jumpHeight;
 	double armourRating;
 	int numBullets;
+	int meleeRange = 1; //Meters
+	int meleeDamage = 7; //HealthPoints
+	int gunRange = 30; //Meters
+	int accuracy = 40; //Percentage
 
 public:
 	cSprite() {
@@ -104,48 +109,110 @@ public:
 			return false;
 	}
 	virtual void attack(cSprite& target) {
-		target.reduceHealth(damage);
+		//If attacker is within melee range of target- attack with melee damage
+		//If attacker is within gunRange of target - attack with damage
+		if (isWithinMeleeRange(target))
+		{
+			target.reduceHealth(meleeDamage);
+			std::cout << "Successful Melee attack!" << std::endl;
+			return;
+		}
+		else if (isWithinWeaponRange(target))
+		{
+			target.reduceHealth(damage);
+			std::cout << "Successful Weapon attack!" << std::endl;
+			return;
+		}
+		else
+		{
+			std::cout << "Target is out of range" << std::endl;
+		}
 	}
 	virtual void move(float x, float y, float z){
 		location.updatePosition(x, y, z);
 	}
     void getLocation(){
         LocationCoordinates* tempLocation = location.getLocation();
-        std::cout << "X: " << tempLocation->getXPosition() << std::endl 
-            << "Y: " << tempLocation->getYPosition() << std::endl
-            << "Z: " << tempLocation->getZPosition() << std::endl;
+        std::cout << "X: " << tempLocation->getXPosition() << ", "
+            << "Y: " << tempLocation->getYPosition() << ", "
+            << "Z: " << tempLocation->getZPosition() << ", ";
         delete tempLocation;
         return;
     }
+	bool isWithinMeleeRange(cSprite& target){
+		if (abs(location.getXPosition() - target.location.getXPosition()) <= meleeRange &&
+		 	abs(location.getYPosition() - target.location.getYPosition()) <= meleeRange &&
+			abs(location.getZPosition() - target.location.getZPosition()) <= meleeRange)
+		{
+			return true;
+		}
+
+		else
+		{
+			return false;
+		}
+	}
+	bool isWithinWeaponRange(cSprite& target){
+		if (abs(location.getXPosition() - target.location.getXPosition()) <= gunRange &&
+		 	abs(location.getYPosition() - target.location.getYPosition()) <= gunRange &&
+			abs(location.getZPosition() - target.location.getZPosition()) <= gunRange)
+		{
+			return true;
+		}
+
+		else
+		{
+			return false;
+		}
+	}
 };
 
 class Tank : public cSprite
 {
 private:
-	int numBombs;
+	int numBombs; 
 public:
 	Tank() :cSprite(100, 1, 5, .5, 1, 4, 100, TANK) {
 		numBombs = 3;
+		meleeRange = 1; //Meters
+		meleeDamage = 5; //HP
+		gunRange = 30; //Meters
+		accuracy = 30; //Percentage
 	}
 	Tank(double hel, double dam, double rof, double mov, double jmp, double AR, int numBull, int nBombs) : cSprite(hel, dam, rof, mov, jmp, AR, numBull, TANK) {
 		numBombs = nBombs;
+		meleeRange = 1; //Meters
+		meleeDamage = 5; //HP
+		gunRange = 30; //Meters
+		accuracy = 30; //Percentage
 	}
 	int getNumBombs(){
 		return numBombs;
 	}
+
 
 };
 
 class Medic : public cSprite
 {
 private:
-	int healRate;
+	int healRate; //HP
+	int healRange = 15; //Meters
+	
 public:
 	Medic() : cSprite(100, 1, 1, 1, 1, 1, 15, MEDIC) {
 		healRate = 1;
+		meleeRange = .7; //Meters
+		meleeDamage = 2; //HP
+		gunRange = 15; //Meters
+		accuracy = 50; //Percentage
 	};
 	Medic(double hel, double dam, double rof, double mov, double jmp, double AR, int numBull, int healRate) : cSprite(hel, dam, rof, mov, jmp, AR, numBull, MEDIC){
 		healRate = healRate;
+		meleeRange = .7; //Meters
+		meleeDamage = 2; //HP
+		gunRange = 15; //Meters
+		accuracy = 50; //Percentage
 	}
 	void healTeammate(cSprite& target) {
 		//if (target.getClass() != BOSS) {
@@ -157,9 +224,13 @@ public:
 class Boss : public cSprite
 {
 private:
+	
 public:
 	Boss() :cSprite(100, 5, .5, .4, 1, 10, 75, BOSS) {
-
+		meleeRange = 1; //Meters
+		meleeDamage = 7; //HealthPoints
+		gunRange = 30; //Meters
+		accuracy = 40; //Percentage
 	};
 	Boss(double hel, double dam, double rof, double mov, double jmp, double AR, int numBull) : cSprite(hel, dam, rof, mov, jmp, AR, numBull, BOSS) {
 	
