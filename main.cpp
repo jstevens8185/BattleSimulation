@@ -1,7 +1,7 @@
 #include <iostream>
 #include <string>
 #include <random>
-#include "Sprite.cpp"
+#include "Sprite.h"
 
 
 
