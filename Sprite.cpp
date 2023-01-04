@@ -14,11 +14,10 @@
 #include <ctime>
 #include <random>
 #include "Map.cpp"
+#include "Weapons.cpp"
+#include "Components.cpp"
 
 
-
-
-enum SpriteClass {TANK, BOSS, DPS, MEDIC, MINION, OPERATOR};
 
 /************************************************************************************
  * Class: 		cSprite
@@ -73,51 +72,42 @@ enum SpriteClass {TANK, BOSS, DPS, MEDIC, MINION, OPERATOR};
  * 				isWithinWeaponRange(cSprite&) -> returns bool
 *************************************************************************************/
 
+struct Health
+{   
+    double sHealth;
+
+    Health()
+    {
+        sHealth = 100;
+    }
+    Health(double x)
+    {
+        sHealth = x;
+    }
+    double getHealth()
+    {
+        return sHealth;
+    }
+    void setHealth(double x)
+    {
+        sHealth = x;
+    }
+};
+
+
 class cSprite {
 private:
 	LocationCoordinates location;
 protected:
 	SpriteClass classType;
-	double health;
-	double damage;
-	double rateOfFire;
+	Health	health;
 	double moveSpeed;
 	double jumpHeight;
 	double armourRating;
-	int numBullets;
-	int meleeRange; //Meters
-	int meleeDamage; //HealthPoints
-	int gunRange; //Meters
-	int accuracy; //Percentage
+	Melee melee;
+	Weapon* weapon;
 
 public:
-	cSprite() {
-		health = 100.00;
-		damage = 1.00;
-		rateOfFire = 1.00;
-		moveSpeed = 1.00;
-		jumpHeight = 1.00;
-		armourRating = 100.00;
-		numBullets = 30;
-		meleeRange = 5;
-		meleeDamage = 25;
-		gunRange = 1000;
-		accuracy = 100;
-		classType = OPERATOR;
-	}
-	cSprite(double hel, double dam, double rof, double mov, double jmp, double AR, int numBull, SpriteClass sClass) {
-		health = hel;
-		damage = dam;
-		rateOfFire = rof;
-		moveSpeed = mov;
-		jumpHeight = jmp;
-		armourRating = AR;
-		numBullets = numBull;
-		classType = sClass;
-	}
-
-
-
 	virtual SpriteClass getClassType() {
 		return classType;
 	}
@@ -126,26 +116,26 @@ public:
 		return;
 	}
 	virtual double getHealth() {
-		return health;
+		return health.getHealth();
 	}
 	virtual void setHealth(double h) {
-		health = h;
+		health.setHealth(h);
 	}
 	virtual void increaseHealth(int amount) {
-		if ((health + amount) < 100) {
-			health += amount;
+		if ((health.getHealth() + amount) < 100) {
+			health.setHealth(health.getHealth() + amount);
 			return;
 		}
 		else {
-			health = 100;
+			health.setHealth(100);
 			return;
 		}
 	}
 	virtual void reduceHealth(double d) {
-		health = health - (d / armourRating);
+		health.setHealth(health.getHealth() - (d / armourRating));
 	}
 	virtual bool isAlive() {
-		if (health > 0) {
+		if (health.getHealth() > 0) {
 			return true;
 		}
 		else
@@ -159,20 +149,21 @@ public:
 			std::cout << "No damage can be dealt to God.\n";
 			return;
 		}
-		if (isWithinMeleeRange(target))
+		if (melee.isWithinMeleeRange(this ,target))
 		{
-			target.reduceHealth(meleeDamage);
+			target.reduceHealth(melee.getDamage());
 			std::cout << "Successful Melee attack!" << std::endl;
 			return;
 		}
-		else if (isWithinWeaponRange(target))
+		else if (weapon->isWithinWeaponRange(this, target))
 		{
 			srand(time(0));
 			int hitChance;
-			for(int i = 0; i < rateOfFire; i++){
+			for(int i = 0; i < weapon->getRateOfFire(); i++){
+				weapon->fire();
 				hitChance = (rand() % 100);
-				if(hitChance < accuracy){
-					target.reduceHealth(damage);
+				if(hitChance < weapon->getAccuracy()){
+					target.reduceHealth(weapon->getDamage());
 					std::cout << "Successful Weapon attack!" << std::endl;
 				}
 				else
@@ -190,7 +181,7 @@ public:
 	virtual void move(float x, float y, float z){
 		location.updatePosition(x, y, z);
 	}
-    void printLocation(){
+    virtual void printLocation(){
         LocationCoordinates* tempLocation = location.getLocation();
         std::cout << "X: " << tempLocation->getXPosition() << ", "
             << "Y: " << tempLocation->getYPosition() << ", "
@@ -198,31 +189,43 @@ public:
         delete tempLocation;
         return;
     }
-	bool isWithinMeleeRange(cSprite& target){
-		if (sqrt((location.getXPosition() - target.location.getXPosition())*(location.getXPosition() - target.location.getXPosition())
-			+ (location.getYPosition() - target.location.getYPosition())*(location.getYPosition() - target.location.getYPosition())  
-			+ (location.getZPosition() - target.location.getZPosition())*(location.getZPosition() - target.location.getZPosition())) <= meleeRange)
-		{
-			return true;
-		}
+	// bool isWithinMeleeRange(cSprite& target){
+	// 	if (sqrt((location.getXPosition() - target.location.getXPosition())*(location.getXPosition() - target.location.getXPosition())
+	// 		+ (location.getYPosition() - target.location.getYPosition())*(location.getYPosition() - target.location.getYPosition())  
+	// 		+ (location.getZPosition() - target.location.getZPosition())*(location.getZPosition() - target.location.getZPosition())) <= meleeRange)
+	// 	{
+	// 		return true;
+	// 	}
 
-		else
-		{
-			return false;
-		}
+	// 	else
+	// 	{
+	// 		return false;
+	// 	}
+	// }
+	// bool isWithinWeaponRange(cSprite& target){
+	// 	if (sqrt((this->location.getXPosition() - target.location.getXPosition())*(this->location.getXPosition() - target.location.getXPosition())
+	// 		+ (this->location.getYPosition() - target.location.getYPosition())*(this->location.getYPosition() - target.location.getYPosition())  
+	// 		+ (this->location.getZPosition() - target.location.getZPosition())*(this->location.getZPosition() - target.location.getZPosition())) <= this->gunRange)
+	// 	{
+	// 		return true;
+	// 	}
+
+	// 	else
+	// 	{
+	// 		return false;
+	// 	}
+	// }
+	float getXCoordinate()
+	{
+		return location.getXPosition();
 	}
-	bool isWithinWeaponRange(cSprite& target){
-		if (sqrt((this->location.getXPosition() - target.location.getXPosition())*(this->location.getXPosition() - target.location.getXPosition())
-			+ (this->location.getYPosition() - target.location.getYPosition())*(this->location.getYPosition() - target.location.getYPosition())  
-			+ (this->location.getZPosition() - target.location.getZPosition())*(this->location.getZPosition() - target.location.getZPosition())) <= this->gunRange)
-		{
-			return true;
-		}
-
-		else
-		{
-			return false;
-		}
+	float getYCoordinate()
+	{
+		return location.getYPosition();
+	}
+	float getZCoordinate()
+	{
+		return location.getZPosition();
 	}
 };
 
@@ -233,15 +236,15 @@ private:
 public:
 	Tank() :cSprite(100, 1, 5, .5, 1, 4, 100, TANK) {
 		numBombs = 3;
-		meleeRange = 1; //Meters
-		meleeDamage = 5; //HP
+		melee.setRange(1); //Meters
+		melee.setDamage(30); //HP
 		gunRange = 30; //Meters
 		accuracy = 30; //Percentage
 	}
 	Tank(double hel, double dam, double rof, double mov, double jmp, double AR, int numBull, int nBombs) : cSprite(hel, dam, rof, mov, jmp, AR, numBull, TANK) {
 		numBombs = nBombs;
-		meleeRange = 1; //Meters
-		meleeDamage = 5; //HP
+		melee.setRange(1); //Meters
+		melee.setDamage(30); //HP
 		gunRange = 30; //Meters
 		accuracy = 30; //Percentage
 	}
@@ -260,15 +263,15 @@ private:
 public:
 	Medic() : cSprite(100, 1, 3, 1, 1, 1, 15, MEDIC) {
 		healRate = 1;
-		meleeRange = .7; //Meters
-		meleeDamage = 2; //HP
+		melee.setRange(.7); //Meters
+		melee.setDamage(30); //HP
 		gunRange = 15; //Meters
 		accuracy = 50; //Percentage
 	};
 	Medic(double hel, double dam, double rof, double mov, double jmp, double AR, int numBull, int healRate) : cSprite(hel, dam, rof, mov, jmp, AR, numBull, MEDIC){
 		healRate = healRate;
-		meleeRange = .7; //Meters
-		meleeDamage = 2; //HP
+		melee.setRange(.7); //Meters
+		melee.setDamage(30); //HP
 		gunRange = 15; //Meters
 		accuracy = 50; //Percentage
 	}
@@ -285,8 +288,8 @@ private:
 	
 public:
 	Boss() :cSprite(100, 5, .5, .4, 1, 10, 75, BOSS) {
-		meleeRange = 1; //Meters
-		meleeDamage = 7; //HealthPoints
+		melee.setRange(1); //Meters
+		melee.setDamage(30); //HealthPoints
 		gunRange = 30; //Meters
 		accuracy = 40; //Percentage
 	};
