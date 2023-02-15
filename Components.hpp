@@ -1,5 +1,5 @@
 //
-//  Health.hpp
+//  Components.hpp
 //  BSv0.3
 //
 //  Created by Jered Stevens on 2/9/23.
@@ -36,4 +36,4 @@ public:
     double getRange();
 };
 
-#endif /* Health_hpp */
+#endif /* Components.hpp */
