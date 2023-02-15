@@ -129,9 +129,7 @@ void Sprite::move(const float x, const float y, const float z)
 };
 bool Sprite::isWithinMeleeRange(Sprite& target)
 {
-    if (sqrt((getXCoord() - target.getXCoord())*(getXCoord() - target.getXCoord())
-             + (getYCoord() - target.getYCoord())*(getYCoord() - target.getYCoord())
-             + (getZCoord() - target.getZCoord())*(getZCoord() - target.getZCoord())) <= getMeleeRange())
+    if (distanceBetween(this, target) <= getMeleeRange())
     {
         return true;
     }
@@ -143,9 +141,7 @@ bool Sprite::isWithinMeleeRange(Sprite& target)
 };
 bool Sprite::isWithinWeaponRange(Sprite& target)
 {
-    if (sqrt((getXCoord() - target.getXCoord())*(getXCoord() - target.getXCoord())
-             + (getYCoord() - target.getYCoord())*(getYCoord() - target.getYCoord())
-             + (getZCoord() - target.getZCoord())*(getZCoord() - target.getZCoord())) <= getWeaponRange())
+    if (distanceBetween(this, target) <= getWeaponRange())
     {
         return true;
     }
@@ -220,15 +216,42 @@ double Sprite::getAccuracy()
     return equippedWeapon->getAccuracy();
 };
 
-SpriteNode::SpriteNode()
+double Sprite::distanceBetween(Sprite* original, Sprite& target)
 {
-    
-};
+    return sqrt((original->getXCoord() - target.getXCoord())*(original->getXCoord() - target.getXCoord())
+             + (original->getYCoord() - target.getYCoord())*(original->getYCoord() - target.getYCoord())
+             + (original->getZCoord() - target.getZCoord())*(original->getZCoord() - target.getZCoord()));
+}
 
-SpriteList::SpriteList()
-{
-    first = last = nullptr;    
-};
+// SpriteNode::SpriteNode()
+// {
+//     sprite = nullptr;
+//     next = prev = nullptr;
+//     aggro = 0;
+// };
+
+// SpriteNode::SpriteNode(Sprite& target)
+// {
+//     sprite = &target;
+//     next = prev = nullptr;
+//     aggro = 0;
+// }
+
+/**
+ * Array structure to hold sprite node. Enemys will contain a SpriteArray to
+ *  keep track of who has the highest aggro
+ * 
+ **/
+
+// SpriteArray::SpriteArray()
+// {
+//       top = 1;
+// };
+
+// void SpriteArray::push(Sprite& spr)
+// {
+    
+// }
 
 /**
  *  Class:      Tank : Sprite
@@ -259,6 +282,74 @@ Tank::~Tank()
 {
     delete equippedWeapon;
 };
+
+/**
+ *  Class:      Medic : Sprite
+ *
+ *  The Medic is unique because he has the ability to heal team members.
+ *  He will have a lower than normal armourClass though and deal less damage
+ *  than other classes.
+ **/
+
+Medic::Medic()
+{
+    setClassType(MEDIC);
+    setHealth(100);
+    setArmourClass(50);
+    setMoveSpeed(4);
+    setJumpHeight(1.2);
+    setMeleeRange(1);
+    setMeleeDamage(15);
+    equippedWeapon = new HandGun();
+    setHealRate(5);
+    setHealRange(5);
+}
+
+void Medic::healTeammate(Sprite& target)
+{
+    if (target.getClassType() != BOSS && target.getClassType() != MINION)
+    {
+        target.increaseHealth(getHealRate());
+    };
+
+    return;
+}
+
+void Medic::setHealRate(const double hRate)
+{
+    healRate = hRate;
+};
+double Medic::getHealRate()
+{
+    return healRate;
+};
+void Medic::setHealRange(const double hRange)
+{
+    healRange = hRange;
+}
+double Medic::getHealRange()
+{
+    return healRange;
+};
+
+/**
+ * Class:       Dps : Sprite
+ *
+ **/
+
+
+Dps::Dps()
+{
+    setClassType(DPS);
+    setHealth(100);
+    setArmourClass(50);
+    setMoveSpeed(3);
+    setJumpHeight(1.5);
+    setMeleeRange(1.5);
+    setMeleeDamage(25);
+    equippedWeapon = new AssultRifle();
+};
+
 
 /**
  *  The enemy class serves as a base class for Boss and Minion
