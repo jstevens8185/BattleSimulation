@@ -73,4 +73,12 @@ public:
     SMG();
     SMG(int dam, double rof, double ran, int magSize, double acc);
 };
+
+class AssultRifle : public Weapon
+{
+private:
+public:
+    AssultRifle();
+    AssultRifle(int dam, double rof, double ran, int magSize, double acc);
+};
 #endif /* Weapons_hpp */
