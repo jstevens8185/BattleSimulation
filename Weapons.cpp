@@ -114,3 +114,14 @@ SMG::SMG()
     setRoundsLeft(getMagazineSize());
     setAccuracy(60);
 };
+
+AssultRifle::AssultRifle()
+{
+    setType(ASSULT_RIFLE);
+    setDamage(10.00);   // Damage per shot
+    setRateOfFire(6);// Shots per second
+    setRange(30.00);    // Meters
+    setMagazineSize(30);
+    setRoundsLeft(getMagazineSize());
+    setAccuracy(85);
+};
