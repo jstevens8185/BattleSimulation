@@ -83,41 +83,43 @@ protected:
     Melee melee;
     Weapon* equippedWeapon;
     
+    double distanceBetween(Sprite* Original, Sprite& Target);
 public:
-    virtual void setClassType(SpriteClass newType);
-    virtual SpriteClass getClassType();
-    virtual void setHealth(const double hel);
-    virtual double getHealth();
-    virtual void increaseHealth(const double amount);
-    virtual void reduceHealth(const double amount);
-    virtual void attackHealth(const double amount);
-    virtual bool isAlive();
-    virtual void setMoveSpeed(const double move);
-    virtual double getMoveSpeed();
-    virtual void setJumpHeight(const double jump);
-    virtual double getJumpHeight();
-    virtual void setArmourClass(const double armour);
-    virtual double getArmourClass();
+    void setClassType(SpriteClass newType);
+    SpriteClass getClassType();
+    void setHealth(const double hel);
+    double getHealth();
+    void increaseHealth(const double amount);
+    void reduceHealth(const double amount);
+    void attackHealth(const double amount);
+    bool isAlive();
+    void setMoveSpeed(const double move);
+    double getMoveSpeed();
+    void setJumpHeight(const double jump);
+    double getJumpHeight();
+    void setArmourClass(const double armour);
+    double getArmourClass();
     virtual void attack(Sprite& target);
-    virtual void move(const float x, const float y, const float z);
-    virtual bool isWithinMeleeRange(Sprite& target);
-    virtual bool isWithinWeaponRange(Sprite& target);
-    virtual float getXCoord();
-    virtual float getYCoord();
-    virtual float getZCoord();
-    virtual LocationCoordinates getLocationCoord();
-    virtual void setMeleeDamage(const double dam);
-    virtual double getMeleeDamage();
-    virtual void setMeleeRange(const double ran);
-    virtual double getMeleeRange();
-    virtual weaponType getWeaponType();
-    virtual void fireWeapon();
-    virtual double getWeaponDamage();
-    virtual double getWeaponROF();
-    virtual double getWeaponRange();
-    virtual int getMagazineSize();
-    virtual int getRoundsLeft();
-    virtual double getAccuracy();
+    void move(const float x, const float y, const float z);
+    bool isWithinMeleeRange(Sprite& target);
+    bool isWithinWeaponRange(Sprite& target);
+    float getXCoord();
+    float getYCoord();
+    float getZCoord();
+    LocationCoordinates getLocationCoord();
+    void setMeleeDamage(const double dam);
+    double getMeleeDamage();
+    void setMeleeRange(const double ran);
+    double getMeleeRange();
+    weaponType getWeaponType();
+    void fireWeapon();
+    double getWeaponDamage();
+    double getWeaponROF();
+    double getWeaponRange();
+    int getMagazineSize();
+    int getRoundsLeft();
+    double getAccuracy();
+    
 };
 
 
@@ -148,20 +150,20 @@ public:
 };
 
 /**
- *  Class:  SpriteList
+ *  Class:  SpriteArray
  *
  *  Contains SpriteNodes with the ability to push new sprites
  *      onto the list and pop sprites off the list
  *
  **/
-struct SpriteList
+struct SpriteArray
 {
 private:
-    SpriteNode* first;
-    SpriteNode* last;
+    SpriteNode* list[20];
+    int top;
 public:
-    SpriteList();
-    SpriteList(Sprite& spr);
+    SpriteArray();
+    SpriteArray(Sprite& spr);
     void push(Sprite& spr);
     void pop(Sprite& spr);
 };
@@ -181,7 +183,7 @@ public:
     Tank();
     void taunt(Sprite& target);
     ~Tank();
-};;
+};
 
 /**
  *  Class:      Medic : Sprite
@@ -193,11 +195,28 @@ public:
 class Medic : public Sprite
 {
 private:
-    double healRate;
+    double healRate; // HP per turn
     double healRange; // Meters
 public:
     Medic();
+    void setHealRate(const double hRate);
+    double getHealRate();
+    void setHealRange(const double hRange);
+    double getHealRange();
     void healTeammate(Sprite& target);
+};
+
+/**
+ * Class:       Dps : Sprite
+ *
+ **/
+
+class Dps : public Sprite
+{
+private:
+public:
+    Dps();
+    ~Dps();
 };
 
 /**
@@ -211,7 +230,7 @@ public:
 class Enemy : public Sprite
 {
 private:
-    SpriteList targetList;
+//    SpriteArray targetList;
 public:
     Enemy();
 };
